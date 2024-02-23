@@ -6,10 +6,10 @@
 <link href="../style.css" rel="stylesheet">
 
 
-<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #130F1D; color: #EEE7E8;">
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: black; color: whitesmoke;">
   <div style="align-items: center; justify-content: center;" class="container-fluid">
     <div class="flexrow">
-      <h2 class="nav-title">PS70 // Intro to Digital Fabrication // F23</h2>
+      <h2 class="nav-title">Week 4: Microcontroller Programming</h2>
     </div>
     <div class="navbar-nav">
       <h4><a class="nav-link" href="../index.html">Home</a></h4>
@@ -23,92 +23,166 @@
 <div class="textcontainer">
 <p class="margin">   </p>
 
-<h3>Week 4: Microcontroller Programming</h3>
+<h4>Assignment: Program an Arduino to Do Something</h4>
+
+This week, since my final zoetrope will require some kind of strobe LED effect that is related to the rotation of the motor and platform, I wanted to try using Arduino to sync the behavior of a single LED to the rotation of a motor. Bobby suggested that I use a stepper motor, as it keeps a record of its rotation (based on the number of rotor teeth, 200 I
+beleive, is standard per 360 deg) which can be referenced with Arduino. Bobby also let me know that the stepper motor 
+would require a driver, specifically the A4988. Using the spec sheet from the product website, I was able to wire up the driver, motor, and Arduino, using an external 12V power supply for the motor. 
+
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <a id="btn" href="wk4.zip" download>Download my code and CAD files from this week!
-  </a>
+  <img src="./driver diagram.png" alt="driver circuit diagram" style="width:100%; max-width:400px;">
 </div>
-<p class="margin">   </p>
+<p class="caption">Circuit diagram for the A4988 driver from the product [site](https://www.pololu.com/product/1182)</p>
 
-<h4>Assignment: Make an Arduino Do Something</h4>
-
-For this week, I wanted to have my Arduino control the movement of my kinetic
-sculpture. First, I had to make some edits to my sculpture so that it would
-actually work. This entailed modifying the gears to attach them to the motor and
-the rest of the sculpture and fabricating a new stand to mount the sculpture on.
+Bobby helped me get started with the basic code needed to move a stepper motor (literally one step at a time) since we haven't yet covered these in lab or class. After getting the motor the spinning, I wired up an LED to the Arduino as well
+and implemented a basic conditional statement to turn the light on every 50 motor steps. It technically worked, but with a problem. As we discussed in lab, using the delay function when turning things on and off can be very disruptive to a program because it means nothing else can happen during that time. You'll see in the video here how choppy the motor was
+spinning due to the LED delay function.
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <img src="./newbase.png" alt="a 3D model of a disassembled cardboard stand">
+  <video controls autoplay muted loop 
+   src="./spin_chop.mov" alt="video of a circuit" style="width:100%; max-width:400px;">
 </div>
-<p class="caption">The re-designed cardboard stand, including notches at the bottom for a shelf to hold the motor.</p>
+<p class="caption">Basic functionality but very choppy motor</p>
 
-Once those were printed and assembled, I was able to test the sculpture with my
-motor. I ran into some problems with friction -- at first, I had tightened the
-various axles and hinges of my sculpture too much, so the motor couldn't turn the
-gears at all. Next, the shelf I had made for the motor to sit in was causing friction
-and preventing the motor from turning. Once I fixed both of those problems, I found
-another issue, which was that I was having trouble fixing the center axle to
-the center gear on the far side, so the motor was only turning one side of the
-sculpture. I decided to leave that problem for another day, and focused on getting
-the motor to work with one side of the sculpture. Eventually, I succeeded, although
-I had to hold the motor in place:
+So, I harkened back to the lab and set out to implement classes (OOP!) for both the motor and the LED, and use the millis() timer to control these outputs instead of the delay function. Inside the LED update function, I included the conditional rule for on/off based on the motor steps, so all I had to do in the program loop was call each function once.
+I chose a strobe "rate" of turning the LED on for 50ms and off for 50ms every time the motor completes 50 steps, but this was an arbitrary decision just for testing purposes since this system is not hooked up to any device yet. For the final, it will need to be calibrated appropriately with the zoetrope speed and dimensions. Here's how everything ran once
+the correct code was in place. 
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <img src="./panthergif.gif" alt="a cardboard panther that looks like it's running">
+  <video controls autoplay muted loop 
+   src="./spin_smooth.mov" alt="video of a circuit" style="width:100%; max-width:400px;">
 </div>
-<p class="caption">It lives!</p>
+<p class="caption">Notice how much smoother the motor runs</p>
 
-Now I could add in the Arduino part. I hooked up a simple circuit with my Arduino
-Uno, my motor, a motor controller, and a few wires, and wrote a simple program to
-supply power to the motor:
+Here's the final Arduino code that was used to get the result. 
 
-<pre><code style="background-color: #2d2b33;">
-  const int A1A = 3;  // define pin 3 for A-1A 
-  const int A1B = 5;  // define pin 4 for A-1B 
+<pre><code style="background-color: floralwhite;">
+ class Stepper 
+{
+  int stepPin;       // stepper motor pin
+  int dirPin;        // direction pin from driver
+  int OnTime;        // milliseconds of on-time
+  int OffTime;       // milliseconds of off-time
 
-  void setup() {
-    pinMode(A1A, OUTPUT);     // specify these pins as outputs
-    pinMode(A1B, OUTPUT);
-    digitalWrite(A1A, LOW);   // start with the motors off 
-    digitalWrite(A1B, LOW);
+  // These maintain the current state
+  int motorState;                 // used to set motor on/off
+  int motorDir;                   // used to set motor direction
+  unsigned long previousMillis;   // will store last time motor was updated
+  unsigned long stepCount = 0;    // will track motor steps in order to sybc with LED
+
+  // Constructor 
+  public:
+  Stepper (int step, int dir, int on, int off)
+  {
+  stepPin = step;
+  dirPin = dir;
+  pinMode(stepPin, OUTPUT);   
+  pinMode(dirPin, OUTPUT);  
+    
+  OnTime = on;
+  OffTime = off;
+  
+  motorState = LOW; //initialize motor off
+  motorDir = LOW; //initialize direction one way (high for the opposite)
+ 
+  previousMillis = 0;
   }
 
-  void loop() {
-    // start the motor 
-    digitalWrite(A1A, HIGH);   
-    digitalWrite(A1B, LOW);
+  long Update()
+  {
+    // check to see if it's time to change the state of the motor
+    unsigned long currentMillis = millis();
+     
+    if((motorState == HIGH) && (currentMillis - previousMillis >= OnTime))
+    {
+      motorState = LOW;  // Turn it off
+      previousMillis = currentMillis;  // Remember the time
+      digitalWrite(stepPin, motorState);  // Update the motor
+      digitalWrite(dirPin, motorDir);  // Update the motor direction
+      stepCount++;
+    }
+    else if ((motorState == LOW) && (currentMillis - previousMillis >= OffTime))
+    {
+      motorState = HIGH;  // turn it on
+      previousMillis = currentMillis;        // Remember the time
+      digitalWrite(stepPin, motorState);     // Update the motor
+      digitalWrite(dirPin, motorDir);        // Update the motor direction
+    }
+    return stepCount;
   }
+};
+
+class Strobe
+{
+  int ledPin;      // the number of the LED pin
+  long OnTime;     // milliseconds of on-time
+  long OffTime;    // milliseconds of off-time
+
+  
+  int ledState;                   // ledState used to set the LED
+  unsigned long previousMillis;   // will store last time LED was updated
+
+  // Constructor 
+  public:
+  Strobe (int pin, long on, long off)
+  {
+  ledPin = pin;
+  pinMode(ledPin, OUTPUT);     
+    
+  OnTime = on;
+  OffTime = off;
+  
+  ledState = LOW; 
+  previousMillis = 0;
+  }
+
+  void Update(unsigned long stepCount)
+  {
+    // check to see if it's time to change the state of the LED
+    unsigned long currentMillis = millis();
+    if (stepCount%50 == 0)
+    {
+      if((ledState == HIGH) && (currentMillis - previousMillis >= OnTime))
+      {
+        ledState = LOW;  // Turn it off
+        previousMillis = currentMillis;  // Remember the time
+        digitalWrite(ledPin, ledState);  // Update the LED
+      }
+      else if ((ledState == LOW) && (currentMillis - previousMillis >= OffTime))
+      {
+        ledState = HIGH;  // turn it on
+        previousMillis = currentMillis;   // Remember the time
+        digitalWrite(ledPin, ledState);   // Update the LED
+      }
+    }
+  }
+};
+
+Strobe light(10, 50, 50);
+Stepper motor(5, 4, 1, 1);
+
+void setup()
+{
+}
+
+void loop()
+{
+  unsigned long stepCount = motor.Update();
+  light.Update(stepCount);
+}
 </code></pre>
 
-I figured out that I had to reverse the direction of the motor to make the panther's
-running motion go the right way, so I flipped pin A1-B to do that and then also
-added some delay functions to create a pattern of motion. Here's a video of the
-result:
+Lastly, here's a diagram I made of the final circuit using [Wokwi](https://wokwi.com/projects/new/arduino-uno).
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <video controls>
-    <source src="./panther-vid.mov" type="video/mp4">
-  </video>
-  </div>
-<p class="caption">The panther running on a timed delay.</p>
-
-Lastly, I went back and added a potentiometer to my circuit to adjust the speed
-the panther runs at. The motor is still not held in place well, so if I were to
-come back to this design I would rethink the motor housing so it doesn't have to
-be held in place.
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <video controls>
-    <source src="panther_nice.mov" type="video/mp4">
-  </video>
-  </div>
-<p class="caption">The final result (so far).</p>
+  <img src="./circuit diagram.jpg" alt="driver circuit diagram" style="width:100%; max-width:500px;">
+</div>
+<p class="caption">The final circuit with motor, driver, LED, power supply</p>
 
 </div>
 </xmp>
