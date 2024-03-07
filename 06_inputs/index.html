@@ -83,13 +83,20 @@ same wiring as a normal potentiometer, with one pin to ground, one to power, and
 cathode goes to ground, and each R, G, and B pins go to different PWM pins on the Arduino. G and B take 100ohm resistors while R takes a bit higher, I used 220. Now, mapping the values from
 the potentiometer to RGB values was the difficult part. Thankfully I found a really great [explanation of this process](https://roboticsbackend.com/arduino-control-rgb-led-with-potentiometer/) online. I won't regurgitate entirely what's already written on the site but essentially it involves some simple math that modulates the R, G and B values between 0-255 depending on the potentiometer reading. The logic is based on 6 conditions:
 
-red is 255, blue is increasing from 0 to 255.
-blue is 255, red is decreasing from 255 to 0.
-blue is 255, green is increasing from 0 to 255.
-green is 255, blue is decreasing from 255 to 0.
-green is 255, red is increasing from 0 to 255.
-red is 255, green is decreasing from 255 to 0.
+<p class="margin">   </p>
+1. red is 255, blue is increasing from 0 to 255.
+<p class="margin">   </p>
+2. blue is 255, red is decreasing from 255 to 0.
+<p class="margin">   </p>
+3. blue is 255, green is increasing from 0 to 255.
+<p class="margin">   </p>
+4. green is 255, blue is decreasing from 255 to 0.
+<p class="margin">   </p>
+5. green is 255, red is increasing from 0 to 255.
+<p class="margin">   </p>
+6. red is 255, green is decreasing from 255 to 0.
 
+<p class="margin">   </p>
 Below is the setup in action, and the circuit diagram.
 
 <p class="margin">   </p>
