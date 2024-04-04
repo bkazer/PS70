@@ -6,10 +6,10 @@
 <link href="../style.css" rel="stylesheet">
 
 
-<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #130F1D; color: #EEE7E8;">
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: black; color: whitesmoke;">
   <div style="align-items: center; justify-content: center;" class="container-fluid">
     <div class="flexrow">
-      <h2 class="nav-title">PS70 // Intro to Digital Fabrication // F23</h2>
+      <h2 class="nav-title">Week 9: Networking</h2>
     </div>
     <div class="navbar-nav">
       <h4><a class="nav-link" href="../index.html">Home</a></h4>
@@ -23,77 +23,82 @@
 <div class="textcontainer">
 <p class="margin">   </p>
 
-<h3>Week 9: Radio, WiFi, Bluetooth (IoT)</h3>
+<h4>Assignment: Program a microcontroller to obtain and respond to information from the internet</h4>
+
+Team Members: Sophia Cabral, Ben Kazer, Carly Lave 
+
+<p class="margin">   </p>
+
+For the group networking project we used a tutorial from Random Nerd Tutorials to take sensor readings from the ESP32 and display them via an app on desktop. Our idea was to create a "weather app" of sorts where the user could view environmental sensor information online.
+
+<p class="margin">   </p>
+
+Tutorial: [ESP32 Firebase Gauges & Charts](https://randomnerdtutorials.com/esp32-esp8266-firebase-gauges-charts/)
+
+<p class="margin">   </p>
+
+We used the following components for this tutorial: ESP32 (Arduino IDE, Breadboard, Photoresistor), Google Firebase 
+
+<p class="margin"> </p>
+
+<h5>Setup</h5>
+
+Our first step was to setup the Firebase collaborative project to host the sensor readings on the ESP32. Firebase is a backend cloud computing platform that hosts data, authentication, and services. The app creates a realtime database that streams/stores information collected via sensor/ESP32. The Firebase/ESP32 connection is made via a unique API Key and URL.
+
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="realtime database.png" alt="a photo of webapp" style="width:100%; max-width:350px;">
+  <img src="project settings.png" alt="webapp auth" style="width:100%; max-width:350px;">
+</div>
+<p class="caption">Admin view of the firebase realtime database and info needed to connect app with ESP32</p>
+
+Following the steps in the tutorial, we set up the project to user enable authentication, which requires users to input their email and password in order to access sensor readings in the app. Given there are only three users of the project, all three of us have access via the Firebase app to log readings; while any new user would need to be authenticated in the project.  
+
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="auth.png" alt="webapp auth" style="width:100%; max-width:350px;">
+  <img src="login.png" alt="a photo of login" style="width:100%; max-width:350px;">
+</div>
+<p class="caption">Backend setup of authorized users and the live app's login page</p>
+
+<h5>ESP32</h5>
+
+While the tutorial provided a base template to display various sensor readings, for our purposes, we were interested in reading brightness only from the photoresistor. We wired a photoresistor to the ESP32 and connected it to our Firebase project. The Random Nerds Tutorial also walked us through a brief install of the ESP 32 as a part one for the specific project. Initial attempts were met with failure, but after some tinkering between the ESP32 and our code, we were able to get the photoresistor responsive to light and have readings display in Arduino. 
 
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <a id="btn" href="wk9.zip" download>Download my files from this week!
-  </a>
-</div>
+  <img src="esp diagram.jpg" alt="circuit diagram" style="width:100%; max-width:350px;">
+  </div>
+<p class="caption">[Circuit diagram](https://esp32io.com/tutorials/esp32-light-sensor) for ESP32</p>
+
+<h5>UI Integration</h5>
+
+Using the Firebase config, we integrated the database host into our frontend html in order to have the app display the sensor readings in real-time. 
+
 <p class="margin">   </p>
 
-<h4>Assignment: Program a Microcontroller</h4>
-
-This week, I worked with Adelaide to program a mincrocontroller over the internet
-using a local LAN website. Our idea was to have a web interface where you could
-tell the microcontroller to play a variety of songs on a connected piezo buzzer.
-Adelaide was becoming an expert at using piezo buzzers with Arduino, because that
-was an important part of her final project, and I focused more on the WiFi logistics.
-Our first task was to set up a basic circuit with an Arduino ESP32 going to
-a piezoelectric buzzer; we just connected the buzzer to ground and to an Arduino pin
-that works for digital output.
+In order to display sensor readings of brightness for the ESP32 to our computer, we developed a simple UI that connects to Firebase and shows the real-time sensor changes. The tutorial required a JavaScript integration in order to transform the data into text and image displays. We hosted the project in Github and the URL connects the Firebase project with our UI code.  
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <img src="buzzer_circuit_1.png" alt="a photo of an Arduino attached to a piezo buzzer">
-  <img src="buzzer_circuit_2.png" alt="another photo of the same circuit">
+  <video controls autoplay muted loop 
+   src="./working.mov" alt="video of a a sensor working with a webapp"style="width:100%; max-width:300px;">
 </div>
-<p class="caption">The buzzer circuit setup.</p>
+<p class="caption">Demo of the webapp reading live values from the ESP32 & photoresistor</p>
 
-For the code, we started off with the Arduino example sketch for a simple WiFi
-server to make sure things were working. Instead of translating songs into
-frequencies ourselves, we decided to go online and see what songs we could find
-already adapted for Arduino. We found a version of the theme from <em>Game of Thrones</em>,
-so we combined that code into the Wifi sketch and added a button on the website
-to play it. To test our work, we connected the buzzer circuit to my computer with the
-Arduino code and accessed the LAN website from Adelaide's computer.
+We ran into some technical issues integrating the backend and frontend at this point. For whatever reason, our URL shows an outdated template from the tutorial. Despite our troubleshooting, the [URL](https://ps70-c6e19.web.app/) via Github is not connecting to the backend and updating sensor readings from the app. We do have a local URL that is accurately displaying sensor readings.  
+
+ <p class="margin">   </p>
+
+Here is a screenshot of what the end UI ought to look like, and evidence of the development. With some more time, we could debug the issue of this problem and integrate the correct frontend with our sensor readings.  
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <img src="buzzer_setup.png" alt="a photo of the circuit from above plus a computer showing code and another showing a simple website.">
+  <img src="wrong UI.png" alt="webapp auth" style="width:100%; max-width:350px;">
+  <img src="right UI.png" alt="a photo of login" style="width:100%; max-width:350px;">
 </div>
-<p class="caption">The buzzer circuit connected to my computer while Adelaide's computer talks to the LAN website.</p>
-
-We wanted to add another song for the buzzer to play, but we wanted to have some
-fun with it, so we found another sketch online that had transcribed "Never Gonna
-Give You Up" by Rick Astley and integrated that into our code. This was a little bit
-tricky, because the two songs were written with different logic, but we managed to
-reverse-engineer the code and slot in the necessary portions while avoiding unnecessary
-repetition.
-
-As you can see from the photo of the interface below, we tried to add a button
-to make the buzzer stop playing music, but between the loop code for the WiFi
-server and the loop code to play the music, we couldn't get it to work, so we
-scrapped that idea.
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <img src="initial_LAN_interface.png" alt="a photo of a basic website with three lines of text">
-</div>
-<p class="caption">The initial interface, with buttons for the two songs and a (broken) 'stop' button.</p>
-
-Once this was working, we decided to make it a little funnier by duplicating our
-"play a song" buttons so that it would look like the Arduino could play a bunch of
-different songs, but actually every button (save one) would be a Rickroll. We also
-added emoticons to each line, just for fun. I had a great time working with Adelaide
-on this project, and I think we did a good job of complementing each other's strengths!
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <img src="final_LAN_interface.png" alt="a photo of a basic website with several lines of text">
-</div>
-<p class="caption">The final interface, with a whole bunch of buttons that (mostly) are just Rickrolls. Which one do you think is the <em>Game of Thrones</em> theme?</p>
+<p class="caption">The current UI which is wrong on the left and the UI that is supposed to be showing on the right</p>
 
 
 </div>
