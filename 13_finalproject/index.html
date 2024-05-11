@@ -6,10 +6,10 @@
 <link href="../style.css" rel="stylesheet">
 
 
-<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #130F1D; color: #EEE7E8;">
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: black; color: whitesmoke;">
   <div style="align-items: center; justify-content: center;" class="container-fluid">
     <div class="flexrow">
-      <h2 class="nav-title">PS70 // Intro to Digital Fabrication // F23</h2>
+      <h2 class="nav-title">Final Project</h2>
     </div>
     <div class="navbar-nav">
       <h4><a class="nav-link" href="../index.html">Home</a></h4>
@@ -21,293 +21,239 @@
 <body>
 <xmp style="display:none;">
 <div class="textcontainer">
-<p class="margin"></p>
+<p class="margin">   </p>
 
-<h3>Final Project: A Custom Macro Keypad</h3>
+<h4>Electronically Controlled 3D Printed Zoetrope</h4>
 
 <p class="margin"></p>
 <p class="margin"></p>
 <div class="flexrow">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/xuObYkerm98?si=5zo5ZUoyZ0IZLmeN"
-    title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
-  </iframe>
+  <video controls autoplay 
+   src="./PS70 Final.mp4" alt="final project video" style="width:100%; max-width:700px;">
+</div>
+
+<div class="flexrow">
+  <a download href='./final.zip'>Download all my files for this project here</a>
 </div>
 
 
 <p class="margin"></p>
 <p class="margin"></p>
-<div class="flexrow">
-  <a id="btn" href="finalproject.zip" download>Download the files used for my final project!
-  </a>
-</div>
-<p class="margin"></p>
 
-<h4>Phase 1: Brainstorming</h4>
+<h4>Brainstorming</h4>
 
 <p class="margin"></p>
-I had been planning to make this for my final project since I applied to the course.
-I had this idea because outside of classes, my main activity is doing
-lighting design and programming for performances on and off Harvard's campus.
-Macro keypads are a common sight among professional lighting programmers because
-the control software that we use for theatrical lights has a command-line interface,
-and some of the more advanced or specialized commands can get very long. It's far
-more efficient to be able to trigger common commands with a single button press,
-especially the longer commands that take a while to type out.
+I had been planning this project since the early weeks of this class. I included some references and early discussion
+of the idea on my [Week 1](https://bkazer.github.io/PS70/01_intro/index.html) page, and created a crude prototype of a similar device, the praxinoscope for the [Week 3](https://bkazer.github.io/PS70/03_fabrication/index.html) assignment.
+<p class="margin"></p>
+When it came time for production, I settled on the idea of 3D printed scultpures/frames for the animation. The turntable would be driven with a stepper motor, the lighting would be LED strips, and a microcontroller would modulate the system
 
-In the brainstorming phase, my specifications for my final project were nebulous.
-The base functionality I wanted was to have several buttons to trigger macros, plus
-a "program" button that would let you capture key press sequences from your computer's
-keyboard and dynamically assign that to a specific button. However, I also had
-other features that the keypad would ideally include:
 
 <p class="margin"></p>
-
-<ol>
-  <li>Two encoder wheels, for controlling what are called "Non-Intensity Parameters"
-      (like a light's pan, tilt, and color)</li>
-  <li>A slider or button to switch between different "profiles," so that the
-      keypad buttons could be mapped to twice or three times as many macros</li>
-  <li>A small display screen, to provide user feedback on the status of the
-      keypad or what macro was just triggered.</li>
-</ol>
+<p class="margin"></p>
+<h4>Prototyping</h4>
 
 <p class="margin"></p>
-During this phase, I made several sketches and diagrams by myself and while talking
-to Ibrahim and the other lab TFs to try to pin down how I wanted my project to end up.
+Before getting too deep into the details, I needed to test out basic mechanisms such as getting a plate to spin with the stepper motor. This is something I explored with my underwhelming MVP in [Week 7](https://bkazer.github.io/PS70/07_outputs/index.html). With this early prototype I learned that load-bearing lazy susan hardware was really helpful for keeping the turntable flat and supported. 
+<p class="margin"></p>
+I hand measured 16 equally spaced sections and 3D printed little discs, placing them incrementally closer to the center of the turntable to do a preliminary test of spinning physical objects. 
 
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="fp-sketch.png" alt="a piece of paper with some diagrams drawn in black marker">
-  <img src="fp-sketch2.jpg" alt="a screenshot of possible keypad layouts">
+  <img src="protogif.gif" alt="a zoetrope prototype" style="width:100%; max-width:200px;">
 </div>
-<p class="caption">Some early diagrams of what the keypad layout could be.</p>
+<p class="caption">My MVP test of a turntable with minimum viable 3D printed animation sequence</p>
 
-
-<p class="margin"></p>
-<p class="margin"></p>
-<h4>Phase 2: Prototyping</h4>
-
-<p class="margin"></p>
-The prototyping phase of this project really kicked off with my
-<a href="../07_outputs/index.html">Minimum Viable Product</a> assignment during
-week 6 of the course. You can read up on the outcome of my MVP on its page, but
-essentially at the end of week 6 I had a good starting foundation for the macro
-functionality of my keypad. I had also realized several problems, though:
-
-<p class="margin"></p>
+Moving out of MVP week I needed to:
 <ul>
-  <li>I didn't actually know how to key my computer to register an Arduino board
-      as a keyboard-like input device, as opposed to an Arduino.</li>
-  <li>I also didn't know how to record key presses from my computer's keyboard
-      and send them back to the Arduino.</li>
-  <li>I really wasn't sure what the circuit architecture of my final project
-      would look like.</li>
+  <li>Develop a stronger and more robust structure for the machine.</li>
+  <li>Have greated control over the spin speed.</li>
+  <li>Figure out how to integrate LED strips.</li>
+  <li>Decide on final 3D printed animation.</li>
+  <li>So many more things, I was overwhelmed...</li>
+</ul>
+
+<h4>Animation Sequence with Grasshopper</h4>
+
+<p class="margin"></p>
+
+I had experimented last semester with a Grasshopper (Rhino plugin) script that converts a 3D mesh into discrete voxels, with varying density. For my zoetrope animation, I thought it would be cool to digitally simulate carving a sculpture by using this script to reveal a voxelized figure from a cube. I found a free download of a 3D model of the statue of david and decided to animate Michaelangelo's masterpiece. The grasshopper script essentially forms a bounding box around the mesh, uses each edge of the mesh to create a box or voxel, and then populates the bounding box with these voxels based on a slider that controls the density. I placed a "modesty voxel" over David's midsection to be appropriate for all ages.
+
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="david rated G.png" alt="David as a mesh" style="width:100%; max-width:600px;">
+  </div>
+<div class="flexrow">
+   <img src="GH.png" alt="grasshopper script" style="width:100%; max-width:700px;">
+</div>
+<p class="caption">G rated David mesh, and the grasshopper script used to voxelize him</p>
+
+<p class="margin"></p>
+I wanted to increase the size and animation length from what I had in the MVP so I used the voxel resolution slider to generate 24 increments of voxelized davids, starting with 1 (cube) and ending with 50 (realtively high res david). These 24 frames actually include 12 frames but duplicated, so I could create an endless loop of cube to david and back again. The last frame is the original mesh with modesty box, no voxels. 24 Frames was also decided in order to correlate with common camera frame rates. I planned on filming my zoetrope at 24 FPS to capture the animation, more on this later. 
+
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="david sequence.png" alt="david being voxelized" style="width:100%; max-width:600px;">
+ </div>
+<p class="caption">24 frames of voxelization, from cube to figure</p>
+
+<p class="margin"></p>
+Next was printing. My first test on the Prusa was abismal in quality so Kassia suggested the resin printer. This required downloading a separate specific AnyCubic slicer. Since the resin printer works by UV curing bitmapped layers (amazing) the print time really only depends on the Z-height of the geometry, with X and Y making little difference. I was able to fit all 24 frames on the print bed and the print time was only ~5 hours with pretty amazing results. 
+
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="davids slicer.png" alt="davids in the slicer" style="width:100%; max-width:300px;">
+  <img src="printed.jpg" alt="davids printed" style="width:100%; max-width:300px;">
+</div>
+<p class="caption">David slicing and printing</p>
+
+After printing, make sure to: 
+<ul>
+  <li>Soak prints in 2 baths of isopropyl alcohol to remove excess resin.</li>
+  <li>Soak prints in hot water (you should be able to leave your finger in for 5-10 seconds, not longer)
+  This softens the supports that can then be removed effortlessly.</li>
+  <li>Place prints in UV cure box to fully harden.</li>
+  <li>Number your frames with sharpie on the bottom so you don't lose track!</li>
 </ul>
 
 <p class="margin"></p>
-With the help of Bobby and the other TFs, I figured out that I could use the
-Arduino <a href="https://www.arduino.cc/reference/en/language/functions/usb/keyboard/">Keyboard</a>
-library to send key presses to my computer. Getting the computer
-to talk back to the Arduino was looking more complicated, so I ended up scrapping
-the dynamic progammability aspect in favor of just setting what the macros did
-ahead of time in the Arduino code. However, I did keep the idea of a 'profile'
-slider switch that would let me toggle between two layers of macros.
-For my MVP, I had used an Arduino Uno, but then
-I switched to an ESP 32 C3 Dev Module; once I figured out I would be using the
-Keyboard library (which isn't supported on ESP 32), I switched to an Adafruit
-ItsyBitsy M4 Express that I found in the lab, which worked wonderfully.
+<div class="flexrow">
+  <img src="isoprop.png" alt="alcohol bath" style="width:100%; max-width:200px;">
+  <img src="soak.jpg" alt="soaking in hot water" style="width:100%; max-width:400px;">
+</div>
+<p class="caption">Processing resin prints</p>
+
+<p class="margin"></p>
+<p class="margin"></p>
+<h4>Assembly</h4>
+
+<p class="margin"></p>
+Now for building the machine. A bill of materials for the final zoetrope hardware assembly:
+<ul>
+  <li>1/4" Acrylic sheet (for the spin plate)</li>
+  <li>1/8" Acrylic sheet (for the baseplate, top panel and reinforcements)</li>
+  <li>1/8" transparent corrugated plastic sheet for the baseplate and skylight. The baseplate is the 
+  exact same shape cut from 1/8" acrylic and corruplast, layered together. Acryclic for structure, corruplast
+  for aesthetics.</li>
+  <li>1/8" white corrugated plastic sheet for the top panel</li>
+  <li>M3 threaded rod (support columns)</li>
+  <li>M3 washers, spacers and standoffs</li>
+  <li>M3 locknuts for the feet</li>
+  <li>M3 screws (for fastending baseplate to motor, and the lazy susan to baseplate and spin plate)</li>
+  <li>4" load bearing [lazy susan](https://www.rockler.com/low-profile-lazy-susans?country=US&sid=V91074&promo=shopping&utm_source=google&utm_medium=cpc&utm_term=&utm_content=pla&utm_campaign=PL&lsft=adlpxid:pla;;;c;9002004;placeholder;28969;pla;local;34&gad_source=1&gclid=CjwKCAjwi_exBhA8EiwA_kU1MrjjMnldVv_2jjahgk5KLl0wrKFdA-y9L4k4-Zlf5FBO4Wb1ehztzhoC6QcQAvD_BwE)</li>
+  <li>Nema 17 stepper motor</li>
+  <li>Neopixel LED strips</li>
+  <li>3D printed motor coupler</li>
+  <li>Vinyl sticker to hide lazy susan hardware (forgot that transparent acrylic is transparent everywhere</li>
+  <li>Hot glue for securing prints to spin plate (though there is also a square tab on the bottom of the prints that sits in a square cutout in the spin plate</li>
+</ul>
 
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="fp-mctest.png" alt="a breadboard with an Arduino and a single button connected">
+  <img src="Assembly.png" alt="Assembly diagram" style="width:100%; max-width:800px;">
 </div>
-<p class="caption">I set up a test circuit with just the ItsyBitsy and a single button to make sure my wiring logic was correct.</p>
+<p class="caption">Assembly diagram for the structure</p>
+
+The acrylic was laser cut, the sticker was cut on the roland vinyl cutter. The only fabrication done outside the lab was cutting the corrugated plastic. This cannot be laser cut so I used the Zund cutter (essentially a lasercutter with a knife) at the GSD to do this. I also etched a reference circle in the skylight to know the boundary for the LED strip placement so that the skylight could still have a clean lip to sit flush on the top panel. 
 
 <p class="margin"></p>
-I also wanted to switch to a different kind of button. My MVP used the small brown
-breadboard buttons that we had in the lab, but I wanted to use the larger black
-buttons because they looked more polished and had a nicer click action. However,
-trying to run my code with the black buttons was producing odd behavior, where
-my key presses would trigger infinitely half the time and not trigger at all the
-other half the time. Eventually, I figured out that the black buttons were toggle
-buttons, not push buttons, so instead of completing a circuit while they were held
-down, they connected and disconnected the circuit each time they were pressed.
+
+Some snapshots from the fabrication process:
+
 
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="fp-buttontest2.png" alt="an Arduino connected to a button soldered onto a breadboard">
-  <img width="400" height="400" src="undo_demo.gif" alt="a screen recording of a person typing and deleting text">
+  <img src="1.jpg" style="width:100%; max-width:150px;">
+  <img src="2.png" style="width:100%; max-width:150px;">
+  <img src="3.jpg" style="width:100%; max-width:150px;">
 </div>
-<p class="caption">For testing the buttons, I wrote a version of my code with just a single macro button assigned to the 'Undo' command, then connected the Arduino pin to each button in turn to test the solder joints.</p>
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="4.jpg" style="width:100%; max-width:200px;">
+  <img src="5.jpg" style="width:100%; max-width:150px;">
+  <img src="6.jpg" style="width:100%; max-width:150px;">
+</div>
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="7.jpeg" style="width:100%; max-width:150px;">
+  <img src="9.jpg" style="width:100%; max-width:200px;">
+  <img src="10.jpeg" style="width:100%; max-width:150px;">
+</div>
+<p class="caption">Assembling. Make sure to lightly sand bottom of prints and ~1/8" border around spin plate cutouts so hot glue will adhere</p>
+
+<h4>Electronics</h4>
+
+In addition to the stepper motor and LED strips, I used the following electronics to control the zoetrope:
+<ul>
+  <li>Xiao ESP32C3 for the stepper motor</li>
+  <li>A4988 Stepper motor driver</li>
+  <li>Arduino Uno for the LED's</li>
+  <li>Button for LED on/off</li>
+  <li>Potentiometer for LED RGB control</li>
+</ul>
+
+Circuit diagram for Xiao (using slightly different ESP 32 for the diagram thats available on Wokwi) and stepper motor:
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="xiao.png" alt="xiao circuit" style="width:100%; max-width:500px;">
+</div>
+
+Circuit diagram for Uno:
+<p class="margin"></p>
+<div class="flexrow">
+  <img src="Uno.png" alt="Uno circuit" style="width:100%; max-width:500px;">
+</div>
 
 <p class="margin"></p>
-I noticed that on every other press the black buttons had a tendency to trigger
-twice; this behavior is visible in the gif above. PK helped me open up one of the buttons to take
-a look at the mechanism, where we found that the reason for this was because each press
-rotates a metal disc so that it does or doesn't connect the two terminals of the
-button; when the button is in its "on" state, with the circuit closed, a half-press
-will disconnect the circuit and then re-connect it, thus registering as two presses.
-I solved this in my code by adding a cooldown timer to each button so they could only
-be pressed once every 100 milliseconds.
+
+I made initial attempts during this project to control both the stepper motor and the LED strips on a single microcontroller. The plan was to have the LED's strobe at the same frame rate as the figures were spun to simulate a camera shutter, and make the illusion visible to the naked eye. I learned the hard way that this was far too much information for a single microcontroller to handle, and exploded 3 esp/xiao's in the process. 
+
+<p class="margin"></p>
+
+So I opted for 2 microcontrollers. Problem is that it is nearly impossible to sync strobing on one microcontroller with spinning on the other, so I decided to just have the LED's serve as mood lighting, with RGB values controlled by a potentiometer and an off button. 
+
+<p class="margin"></p>
+
+I also made this little enclosure for all the electronics and controls out of 1/8" acrylic that I sanded to get a frosted look.
 
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="buttondetail.png" alt="close-up photo of a button with the outer shell removed">
+  <img src="box.JPG" alt="controller box" style="width:100%; max-width:400px;">
 </div>
-<div class="flexrow">
-  <img src="buttondetail3.png" alt="close-up photo of a button mechanism with the circuit open">
-  <img src="buttondetail4.png" alt="close-up photo of a button mechanism with the circuit closed">
-</div>
-<p class="caption">Looking at the button mechanism revealed that this was a hardware problem, not a software one.</p>
 
+<h4>Calibration</h4>
+
+This part was tricky. I thought by simply having 24 frames in my animation, I could spin the table 1 revolution per second, record with my camera at 24 FPS, and everything would work perfectly. But because of the friction from the hardware and material components, this was not the case. There was also the issue of light and shutter angle on the camera which I had to figure out. After countless tests I figured out that a max speed of 620 with AccelStepper and 1 microstep pin active was the proper speed for 24 FPS, and 1200 for 30 FPS. I also needed to set the camera shutter angle to 1/1000, and manually adjust the ISO & focus. I shot all footage with a panasonic lumix gx8, but this could be done with any camera as long as shutter angle and FPS are controllable. The demo video at the top of this page has the best footage.
 
 <p class="margin"></p>
-<p class="margin"></p>
-<h4>Phase 3: Final Planning</h4>
 
-<p class="margin"></p>
-I decided to upgrade my circuitry to a solderable breadboard for a more polished
-look. Because of the size of my buttons and the number of pins on the board, I
-had to use two breadboards, but I still wanted the size of the keypad to be pretty
-small, so I went with a double-decker approach. I planned to put the Arduino on
-the bottom layer and wire it to buttons on the top layer, then stack the boards
-by screwing them together with a brass spacer in between. To hold the stack in place,
-I would design an enclosure that the boards could screw into.
+Here are some more fun photos of the final product.
 
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="board-stack.png" alt="two solderable breadboards on top of each other, separated with brass spacers">
+  <img src="f1.JPG"  style="width:100%; max-width:200px;">
+  <img src="f2.JPG"  style="width:100%; max-width:200px;">
+  <img src="f3.JPG"  style="width:100%; max-width:200px;">
 </div>
-<p class="caption">Stacking the breadboards meant I could keep my form factor and still have room for all my components.</p>
-
-<p class="margin"></p>
-I noticed a warning on the documentation page for the Keyboard library that reminded
-users to be careful of giving the Arduino unlimited access to the keyboard, because
-if the Arduino was endlessly sending key presses it would make it very hard to regain
-control. Sure enough, at one point I was trying to test my code only to discover
-that the Arduino was constantly typing text onto my computer, thus making it
-nearly impossible for me to upload new code.
-
-<p class="margin"></p>
-I managed to fix this by holding down
-the Arduino's reset switch until the code was just starting to upload, so that the
-upload would interrupt the current process and break the Arduino's control. After
-that, though, I found advice online from people who'd run into this issue and
-added a 'safety' pin or button to the circuit that would disable the program if
-connected to ground. I decided to add this to my implementation, and also noted
-that I should add a separate reset switch wired to the Arduino's RST pin because
-the reset switch on the board would be out of reach in the final enclosure.
-
-<p class="margin"></p>
-<p class="margin"></p>
-<h4>Phase 4: Assembly</h4>
-
-<p class="margin"></p>
-For the final enclosure, I had
-decided to design a 3D-printed base with laser-cut acrylic sides. The base would
-have divots to add screw inserts, so that I could secure my circuit, and the edges
-would slot together with the acrylic sides. I used clear acrylic so you could see
-the circuitry inside the enclosure. The sides and base were fixed together with
-T-slot joints -- a type of joint where a screw goes through the face of one piece
-into the edge of another, which holds a captive nut in it that the screw locks into.
-
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="enclosure_3d.png" alt="a 3D model of the enclosure, simulating the look of the black PLA and clear acrylic">
+  <img src="f4.JPG" style="width:100%; max-width:200px;">
+  <img src="f5.JPG" style="width:100%; max-width:200px;">
+  <img src="f6.JPG" style="width:100%; max-width:200px;">
 </div>
-<p class="caption">I designed the enclosure as one assembly in Fusion 360 to make sure the pieces all fit together, then separated the components to fabricate them.</p>
-
-<p class="margin"></p>
-My first version of the enclosure had some slight spacing issues: the slots for the
-nuts were slightly too big, so the sides weren't held in place correctly; the
-divots in the base didn't quite match the location of the screw holes on the
-breadboards; and the openings on the sides for the Arduino's micro-USB port and the
-reset and safety switches weren't quite the right size. I went back to my model
-and adjusted the dimensions, then re-printed the base and re-cut the sides, and
-version two worked much better.
-
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="enclosure-v1.png" alt="the breadboard stack sitting in version one of the enclosure">
+  <img src="f7.JPG" style="width:100%; max-width:200px;">
+  <img src="f8.JPG" style="width:100%; max-width:200px;">
+  <img src="f9.JPG" style="width:100%; max-width:200px;">
 </div>
-<p class="caption">I tested the first version of the enclosure before soldering the circuit and was happy about the aesthetics of the design.</p>
-
-<p class="margin"></p>
-Soldering my breadboard stack was a little tricky. First, I soldered the eight
-macro buttons and the profile slider switch to the top board, then I soldered
-the microcontroller and the external safety and reset buttons to the bottom board.
-From there, I wrote out a list of all the solder connections I'd need to make so I
-could reference it at the solder bench.
-
 <p class="margin"></p>
 <div class="flexrow">
-  <img src="fp-solderplan.png" alt="a piece of paper with a list written on it">
-  <img src="fp-soldersetup.png" alt="a soldering bench setup with two breadboards held at right angles">
+  <img src="f10.JPG" style="width:100%; max-width:200px;">
+  <img src="f11.JPG" style="width:100%; max-width:200px;">
+  <img src="f12.JPG" style="width:100%; max-width:200px;">
 </div>
-<p class="caption">Top: my list of connections to solder. The macro buttons are labelled as if in a grid with rows A and B and columns 1 through 4.</p>
-<p class="caption">Bottom: my soldering setup, with the two boards held open but as close as possible for minimum excess wire.</p>
 
-<p class="margin"></p>
-I used standard-thickness wire to make
-any connections that were on just one board (e.g. connecting the safety and
-reset buttons), and then I used thinner, more flexible wire to connect the buttons
-on top to the Arduino on the bottom. I soldered the two halves together with the
-top side propped open, then once everything was connected I folded the top down
-and gently coiled the excess wire between the boards.
-
-<p class="margin"></p>
-As I connected more of the wires, my freedom of movement got more and more limited;
-some of the connections were very tight. I'm pretty proud that I was able to
-solder everything down as well as I did!
-
-<p class="margin"></p>
-<div class="flexrow">
-  <img src="fp-solderdetail.png" alt="a close up of my circuit wired across two solderable breadboards">
-  <img src="fp-solderdetail2.png" alt="another view of the same circuit, focusing on the microcontroller">
-</div>
-<p class="caption">It took me several hours to carefully solder all the wires into place. I was worried I would break them by bending them too much.</p>
-
-<p class="margin"></p>
-I used a soldering iron to embed the screw inserts into the printed base (by heating
-up the metal inserts to soften the plastic around them, then pushing them into place).
-The divots in the base had been designed pretty close to the dimensions of the inserts,
-but since 3D printed parts tend to expand a little outside of their bounds, there
-was enough extra material for the inserts to fit snugly. Last but not least, I
-screwed the breadboards into the base and assembled the housing, and the hardware
-for my project was complete!
-
-<p class="margin"></p>
-<div class="flexrow">
-  <img src="fp-1.png" alt="the finished keypad circuit in its enclosure">
-</div>
-<div class="flexrow">
-  <img src="fp-2.png" alt="another view of the same">
-</div>
-<div class="flexrow">
-  <img src="fp-3.png" alt="another view of the same">
-</div>
-<p class="caption">The finished keypad.</p>
-
-<p class="margin"></p>
-The code ended up being a little simpler than I had anticipated -- or maybe that
-was just because I'd figured out a lot of it early on. I used the class functionality
-from my MVP to store the eight buttons to reduce code duplication when checking
-whether a button had been pressed, and also so that each one could have its own
-read pin and cooldown timer variable. Because these are toggle buttons, each one also needed
-its own state variable to keep track of whether the circuit was open or closed,
-because you check whether a toggle button has been pressed by seeing whether its
-state is different from what it was just a moment ago.
-
-<p class="margin"></p>
-I wanted to save the macro sequences also within the class, as a kind of dynamically
-variable function, but that kind of functionality doesn't work well in C++. Instead,
-I wrote macro functions at the bottom of my code and had each button call the
-appropriate function when pressed. To implement the two layers of macros, I just
-added a check at the top of the loop code for whether the profile slider switch
-was on or off. Lastly, I included the code for my safety button right at the top
-of the loop code, so that if a bug ever caused me to lose control of my keyboard,
-I could hit the safety button to delay the code for 10 seconds (which should be
-long enough to upload new code from my computer).
 
 </div>
 </xmp>
